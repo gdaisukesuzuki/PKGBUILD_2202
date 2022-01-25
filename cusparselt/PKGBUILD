@@ -1,0 +1,29 @@
+# Maintainer: Sven-Hendrik Haase <svenstaro@gmail.com>
+# Maintainer: Konstantin Gizdov <arch@kge.pw>
+pkgname=cusparselt
+pkgbase=libcusparse_lt
+pkgver=0.2.0
+_pkgver=0.2.0.1
+pkgrel=2
+pkgdesc=""
+arch=('x86_64')
+url="https://developer.nvidia.com/cusparselt/"
+license=('custom:NVIDIA')
+depends=('cuda')
+options=(!strip staticlibs)
+source=(https://developer.download.nvidia.com/compute/libcusparse-lt/"${pkgver}"/local_installers/"${pkgbase}"-linux-"${arch}"-"${_pkgver}".tar.gz cusparselt.pc)
+# source=(https://developer.download.nvidia.com/compute/libcusparse-lt/0.1.0/local_installers/libcusparse_lt-linux-x86_64-0.1.0.2.tar.gz)
+sha512sums=('SKIP' 'SKIP')
+
+
+package() {
+  local _predir="${srcdir}/${pkgbase}"
+  cd ${_predir}
+  mkdir -p "${pkgdir}/opt/cuda/targets/x86_64-linux/include"
+  cp -al include/*  "${pkgdir}/opt/cuda/targets/x86_64-linux/include"
+  mkdir -p "${pkgdir}/opt/cuda/targets/x86_64-linux/lib"
+  cp -al lib64/* "${pkgdir}/opt/cuda/targets/x86_64-linux/lib"
+  chmod +x "${pkgdir}/opt/cuda/targets/x86_64-linux/lib/libcusparseLt.so.${_pkgver}"
+  install -Dm644 LICENSE.txt "${pkgdir}"/usr/share/licenses/${pkgname}/LICENSE
+  install -Dm644 "${srcdir}"/cusparselt.pc "${pkgdir}"/usr/lib/pkgconfig/cusparselt.pc
+}

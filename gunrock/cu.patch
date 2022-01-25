@@ -1,0 +1,106 @@
+*** gunrock/gunrock/util/reduce_device.cuh-dist	2021-12-21 09:32:33.632266891 +0900
+--- gunrock/gunrock/util/reduce_device.cuh	2021-12-21 09:36:32.795866755 +0900
+***************
+*** 77,83 ****
+                                 util::Array1D<SizeT, SizeT> &segment_offsets,
+                                 ReductionOp reduction_op, InputT initial_value,
+                                 cudaStream_t stream = 0,
+!                                bool debug_synchronous = false) {
+    cudaError_t retval = cudaSuccess;
+    size_t request_bytes = 0;
+  
+--- 77,83 ----
+                                 util::Array1D<SizeT, SizeT> &segment_offsets,
+                                 ReductionOp reduction_op, InputT initial_value,
+                                 cudaStream_t stream = 0,
+!                                bool debug_synchronous = false, int ptx_version = 0) {
+    cudaError_t retval = cudaSuccess;
+    size_t request_bytes = 0;
+  
+***************
+*** 86,92 ****
+               keys_out.GetPointer(util::DEVICE), num_segments,
+               segment_offsets.GetPointer(util::DEVICE),
+               segment_offsets.GetPointer(util::DEVICE) + 1, reduction_op,
+!              initial_value, stream, debug_synchronous);
+    if (retval) return retval;
+  
+    retval = cub_temp_space.EnsureSize_(request_bytes, util::DEVICE);
+--- 86,92 ----
+               keys_out.GetPointer(util::DEVICE), num_segments,
+               segment_offsets.GetPointer(util::DEVICE),
+               segment_offsets.GetPointer(util::DEVICE) + 1, reduction_op,
+!              initial_value, stream, debug_synchronous, ptx_version);
+    if (retval) return retval;
+  
+    retval = cub_temp_space.EnsureSize_(request_bytes, util::DEVICE);
+***************
+*** 98,104 ****
+               keys_out.GetPointer(util::DEVICE), num_segments,
+               segment_offsets.GetPointer(util::DEVICE),
+               segment_offsets.GetPointer(util::DEVICE) + 1,
+!              reduction_op, initial_value, stream, debug_synchronous);
+    if (retval) return retval;
+  
+    return retval;
+--- 98,104 ----
+               keys_out.GetPointer(util::DEVICE), num_segments,
+               segment_offsets.GetPointer(util::DEVICE),
+               segment_offsets.GetPointer(util::DEVICE) + 1,
+!              reduction_op, initial_value, stream, debug_synchronous, ptx_version);
+    if (retval) return retval;
+  
+    return retval;
+*** gunrock/gunrock/util/sort_device.cuh-dist	2021-12-21 09:32:45.705791952 +0900
+--- gunrock/gunrock/util/sort_device.cuh	2021-12-21 09:38:38.347623183 +0900
+***************
+*** 228,234 ****
+                            util::Array1D<SizeT, OffsetT> offsets,
+                            int begin_bit = 0, int end_bit = sizeof(KeyT) * 8,
+                            cudaStream_t stream = 0,
+!                           bool debug_synchronous = false) {
+      cudaError_t retval = cudaSuccess;
+      cub::DoubleBuffer<KeyT> keys(
+          const_cast<KeyT *>(in.GetPointer(util::DEVICE)),
+--- 228,234 ----
+                            util::Array1D<SizeT, OffsetT> offsets,
+                            int begin_bit = 0, int end_bit = sizeof(KeyT) * 8,
+                            cudaStream_t stream = 0,
+!                           bool debug_synchronous = false, int ptx_version = 0) {
+      cudaError_t retval = cudaSuccess;
+      cub::DoubleBuffer<KeyT> keys(
+          const_cast<KeyT *>(in.GetPointer(util::DEVICE)),
+***************
+*** 241,247 ****
+          SortKeys(NULL, request_bytes, keys, num_items, num_segments,
+                   offsets.GetPointer(util::DEVICE),
+                   offsets.GetPointer(util::DEVICE) + 1, begin_bit, end_bit,
+!                  stream, debug_synchronous);
+      if(retval) return retval;
+  
+      retval = temp_space.EnsureSize_(request_bytes, util::DEVICE);
+--- 241,247 ----
+          SortKeys(NULL, request_bytes, keys, num_items, num_segments,
+                   offsets.GetPointer(util::DEVICE),
+                   offsets.GetPointer(util::DEVICE) + 1, begin_bit, end_bit,
+!                  stream, debug_synchronous, ptx_version);
+      if(retval) return retval;
+  
+      retval = temp_space.EnsureSize_(request_bytes, util::DEVICE);
+***************
+*** 251,257 ****
+          SortKeys(temp_space.GetPointer(util::DEVICE), request_bytes, keys,
+                   num_items, num_segments, offsets.GetPointer(util::DEVICE),
+                   offsets.GetPointer(util::DEVICE) + 1, begin_bit, end_bit,
+!                  stream, debug_synchronous);
+  
+      if(retval) return retval;
+  
+--- 251,257 ----
+          SortKeys(temp_space.GetPointer(util::DEVICE), request_bytes, keys,
+                   num_items, num_segments, offsets.GetPointer(util::DEVICE),
+                   offsets.GetPointer(util::DEVICE) + 1, begin_bit, end_bit,
+!                  stream, debug_synchronous, ptx_version);
+  
+      if(retval) return retval;
+  

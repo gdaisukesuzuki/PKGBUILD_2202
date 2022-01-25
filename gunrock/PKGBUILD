@@ -1,0 +1,80 @@
+# Maintainer: Sven-Hendrik Haase <svenstaro@gmail.com>
+# Contributor: bartus <arch-user-repoᘓbartus.33mail.com>
+# Contributor: pingplug <pingplug@foxmail.com>
+# Contributor: cornholio <vigo.the.unholy.carpathian@gmail.com>
+
+pkgname=(gunrock)
+_pkgname=gunrock
+#conflicts=(spdlog)
+# pkgver=0.19.0
+pkgver=1.3
+_pkgver=1.3
+#_pkgver=0.19.0
+pkgrel=2
+pkgdesc="GPU Graph Analytics"
+arch=('x86_64')
+url="https://gunrock.github.io/docs/#/"
+license=('custom')
+# depends=('fmt'  'cython' 'cuda' 'cmake' 'python-numba' 'cudf')
+depends=('gcc10'  'cuda' 'cmake'  )
+# depends=('spdlog' 'cython' 'cuda' 'cmake' 'python-numba' 'fmt')
+# depends=('gcc9' 'cython' 'cuda' 'cmake' 'python-numba' 'spdlog')
+# source=("${_pkgname}::git+https://github.com/rapidsai/rmm.git")
+# source=("${_pkgname}::git+https://github.com/rapidsai/rmm.git#branch=branch-${_pkgver}"
+# source=("${_pkgname}::git+https://github.com/gunrock/gunrock.git#tag=v1.2"
+source=("${_pkgname}::git+https://github.com/gunrock/gunrock.git#branch=dev"
+"cu.patch" "cmake.patch"
+  )
+
+# sha256sums=('SKIP')
+# sha256sums=('SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP' 'SKIP')
+
+build() {
+#  patch -p0 < rmm.patch
+#  patch -p0 < patch.patch
+  patch -p0 < cu.patch
+  patch -p0 < cmake.patch
+  cd "${srcdir}/gunrock"
+
+
+  git submodule update --init --remote --recursive
+
+#  ./build.sh -v -n rmm
+}
+
+package() {
+ cd "${srcdir}"/gunrock
+ mkdir build && cd build
+
+        cmake -DCMAKE_INSTALL_PREFIX="/usr" \
+              -DGUNROCK_BUILD_SHARED_LIBS=ON \
+              -DGUNROCK_BUILD_TESTS=OFF \
+              -DGUNROCK_BUILD_APPLICATIONS=ON \
+              -DCUDA_AUTODETECT_GENCODE=OFF \
+              -DCUDA_STATIC_RUNTIME=OFF \
+              -DGUNROCK_GENCODE_SM60=OFF \
+              -DGUNROCK_GENCODE_SM61=OFF \
+              -DGUNROCK_GENCODE_SM70=OFF \
+              -DGUNROCK_GENCODE_SM72=OFF \
+              -DGUNROCK_GENCODE_SM75=OFF \
+              -DGUNROCK_GENCODE_SM80=OFF \
+              -DGUNROCK_GENCODE_SM86=ON \
+              -DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-10 \
+          -DCMAKE_C_COMPILER=/usr/bin/gcc-10 \
+          -DCMAKE_CXX_COMPILER=/usr/bin/g++-10 \
+              -DBUILD_BENCHMARKS=ON \
+              -DPER_THREAD_DEFAULT_STREAM=OFF \
+              -DCMAKE_BUILD_TYPE=Release  ..
+   cmake --build . -j$(nproc)
+#   DESTDIR="${pkgdir}" cmake --build . --target install DESTDIR="{pkgdir}"
+# make -j2 DESTDIR="$pkgdir" install
+
+  install -Dm755 ${srcdir}/gunrock/build/lib/libgunrock.so  ${pkgdir}/usr/lib/libgunrock.so
+  install -Dm644 ${srcdir}/gunrock/gunrock/gunrock.h  ${pkgdir}/usr/include/gunrock/gunrock.h
+  install -Dm644 ${srcdir}/gunrock/gunrock/gunrock.hpp  ${pkgdir}/usr/include/gunrock/gunrock.hpp
+
+   install -Dm644 ${srcdir}/gunrock/LICENSE.TXT  ${pkgdir}/usr/share/licenses/gunrock/LICENSE
+}
+
+# vim:set ts=2 sw=2 et:

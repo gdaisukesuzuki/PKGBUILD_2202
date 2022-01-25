@@ -1,0 +1,100 @@
+*** gunrock/cmake/CPM.cmake-dist	2021-11-09 17:27:15.958308421 +0900
+--- gunrock/cmake/CPM.cmake	2021-11-09 17:27:34.684991011 +0900
+***************
+*** 1,4 ****
+! set(CPM_DOWNLOAD_VERSION 0.27.5)
+  
+  if(CPM_SOURCE_CACHE)
+    set(CPM_DOWNLOAD_LOCATION "${CPM_SOURCE_CACHE}/cpm/CPM_${CPM_DOWNLOAD_VERSION}.cmake")
+--- 1,4 ----
+! set(CPM_DOWNLOAD_VERSION 0.34.0)
+  
+  if(CPM_SOURCE_CACHE)
+    set(CPM_DOWNLOAD_LOCATION "${CPM_SOURCE_CACHE}/cpm/CPM_${CPM_DOWNLOAD_VERSION}.cmake")
+*** gunrock/CMakeLists.txt-dist	2021-12-21 09:45:29.336313684 +0900
+--- gunrock/CMakeLists.txt	2021-12-21 09:49:19.219149411 +0900
+***************
+*** 76,92 ****
+  CPMAddPackage(
+    NAME RapidJSON
+    GITHUB_REPOSITORY Tencent/rapidjson
+!   GIT_TAG v1.1.0-489-g4b3d7c2f
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/externals/rapidjson)
+  CPMAddPackage(
+    NAME ModernGPU
+    GITHUB_REPOSITORY NVlabs/moderngpu
+!   GIT_TAG v2.12_june_8_2016-16-g2b39855
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/externals/moderngpu)
+  CPMAddPackage(
+    NAME CUB
+    GITHUB_REPOSITORY NVlabs/cub
+!   GIT_TAG 1.8.0
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/externals/cub)
+  
+  # begin /* Include moderngpu & cub */
+--- 76,92 ----
+  CPMAddPackage(
+    NAME RapidJSON
+    GITHUB_REPOSITORY Tencent/rapidjson
+!   GIT_TAG 0d4517f15a8d7167ba9ae67f3f22a559ca841e3b
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/externals/rapidjson)
+  CPMAddPackage(
+    NAME ModernGPU
+    GITHUB_REPOSITORY NVlabs/moderngpu
+!   GIT_TAG 2b3985541c8e88a133769598c406c33ddde9d0a5
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/externals/moderngpu)
+  CPMAddPackage(
+    NAME CUB
+    GITHUB_REPOSITORY NVlabs/cub
+!   GIT_TAG cuda-11.5
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/externals/cub)
+  
+  # begin /* Include moderngpu & cub */
+***************
+*** 159,164 ****
+--- 159,167 ----
+    -gencode=arch=compute_75,code=sm_75 -gencode=arch=compute_75,code=compute_75)
+  set(GENCODE_SM80
+    -gencode=arch=compute_80,code=sm_80 -gencode=arch=compute_80,code=compute_80)
++ set(GENCODE_SM86
++   -gencode=arch=compute_86,code=sm_86 -gencode=arch=compute_86,code=compute_86)
++ 
+  
+  #set(GENCODE -gencode=arch=compute_10,code=compute_10) # at least generate PTX
+  # end /* SET GENCODE_SM */
+***************
+*** 230,235 ****
+--- 233,240 ----
+  
+  option(GUNROCK_APP_KCORE
+    "If on, builds only KCORE application."
++   OFF)
++ 
+  option(GUNROCK_APP_LP
+    "If on, builds only LP application."
+    OFF)
+***************
+*** 314,319 ****
+--- 319,327 ----
+    option(GUNROCK_GENCODE_SM80
+      "ON to generate code for Compute Capability 8.0 devices"
+      OFF)
++   option(GUNROCK_GENCODE_SM86
++     "ON to generate code for Compute Capability 8.0 devices"
++     ON)
+  endif ()
+  
+  option (CUDA_AUTODETECT_GENCODE
+***************
+*** 385,390 ****
+--- 393,402 ----
+    set(GENCODE ${GENCODE} ${GENCODE_SM80})
+  endif(GUNROCK_GENCODE_SM80)
+  
++ if (GUNROCK_GENCODE_SM86)
++   set(GENCODE ${GENCODE} ${GENCODE_SM86})
++ endif(GUNROCK_GENCODE_SM86)
++ 
+  message(STATUS "Listing chosen GENCODE commands")
+  foreach(code IN LISTS GENCODE)
+      message(STATUS "${code}")

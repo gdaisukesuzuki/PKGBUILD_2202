@@ -1,0 +1,9 @@
+cudaroot=/opt/cuda
+libdir=${cudaroot}/targets/x86_64-linux/lib
+includedir=${cudaroot}/targets/x86_64-linux/include
+
+Name: cusparselt
+Description: CUDA Sparselt Matrix Library
+Version: 0.2.0
+Libs: -L${libdir} -lcusparseLt
+Cflags: -I${includedir}

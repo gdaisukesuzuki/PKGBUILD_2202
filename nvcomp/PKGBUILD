@@ -1,0 +1,52 @@
+# Maintainer: Sven-Hendrik Haase <svenstaro@gmail.com>
+# Contributor: bartus <arch-user-repoᘓbartus.33mail.com>
+# Contributor: pingplug <pingplug@foxmail.com>
+# Contributor: cornholio <vigo.the.unholy.carpathian@gmail.com>
+
+pkgname=(nvcomp)
+_pkgname=nvcomp
+pkgver=2.1
+pkgrel=2
+pkgdesc="NVIDIA Tool Extension Library"
+arch=('x86_64')
+url="https://github.com/NVIDIA/NVTX"
+license=('custom')
+depends=('cuda')
+# depends=('gcc9' 'cython' 'cuda' 'cmake' 'python-numba' 'spdlog')
+# source=("${_pkgname}::git+https://github.com/rapidsai/rmm.git")
+source=("${_pkgname}::git+https://github.com/NVIDIA/nvcomp.git")
+
+
+sha256sums=( 'SKIP')
+# sha256sums=('SKIP' 'SKIP')
+# sha256sums=('SKIP' 'SKIP' 'SKIP')
+
+
+
+package() {
+#  patch -p0 < cmake.patch
+  cd "${srcdir}/nvcomp"
+      cmake -S "${srcdir}"/nvcomp -B "${srcdir}"/build \
+          -DCMAKE_INSTALL_PREFIX="/usr" \
+          -DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-10 \
+          -DCMAKE_C_COMPILER=/usr/bin/gcc \
+          -DCMAKE_CXX_COMPILER=/usr/bin/g++ \
+          -DUSE_NVTX=ON \
+          -DBUILD_TESTS=OFF \
+          -DBUILD_BENCHMARKS=ON \
+          -DDISABLE_DEPRECATION_WARNING=ON \
+         -DCMAKE_CXX_STANDARD=17 \
+          -DPER_THREAD_DEFAULT_STREAM=ON \
+           -DCMAKE_CUDA_ARCHITECTURES="86" \
+          -DCMAKE_BUILD_TYPE=Release 
+
+   find "${srcdir}"/build -name flags.make | xargs  sed -i -e 's/--generate-code=arch=compute_60,code=\[compute_60,sm_60\] --generate-code=arch=compute_70,code=\[sm_70\] --generate-code=arch=compute_75,code=\[sm_75\] --generate-code=arch=compute_80,code=\[compute_80,sm_80\]/--generate-code=arch=compute_86,code=\[sm_86\]/g'
+
+   cd "${srcdir}/build"
+   make -j14 -C .  DESTDIR="${pkgdir}" install
+
+
+  install -Dm644 ${srcdir}/${_pkgname}/LICENSE ${pkgdir}/usr/share/licenses/nvcomp/LICENSE
+}
+
+# vim:set ts=2 sw=2 et:
