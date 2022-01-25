@@ -1,0 +1,131 @@
+# Maintainer: Bruno Pagani <archange@archlinux.org>
+# Contributor: Guillaume Horel <guillaume.horel@gmail.com>
+
+_pkg=arrow-apache-arrow
+pkgname=(arrow-cuda python-pyarrow-cuda)
+pkgver=6.0.1
+pkgrel=3
+pkgdesc="Columnar in-memory analytics layer for big data."
+arch=(x86_64)
+url="https://arrow.apache.org"
+license=(Apache)
+depends=(boost-libs brotli double-conversion c-ares gflags
+         google-glog libutf8proc lz4 protobuf rapidjson
+         snappy thrift uriparser zstd re2)
+makedepends=(apache-orc boost cmake flatbuffers gmock python-numpy git)
+options=('staticlibs')
+source=(https://github.com/apache/arrow/archive/apache-arrow-${pkgver}.tar.gz
+        git+https://github.com/apache/parquet-testing.git
+        git+https://github.com/apache/arrow-testing.git
+        cc.patch
+        cmake.patch
+        tensorflow-abi.patch
+)
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+)
+
+prepare(){
+  cd arrow-apache-arrow-${pkgver}
+  # patch -Np1 -i ../arrow-protobuf-3.15-r1.patch
+  patch -p1 < ../cc.patch
+  # patch -p1 < ../cmake.patch
+  # cd ${_pkg}-${pkgver}
+  patch -Np1 -i ../tensorflow-abi.patch
+
+}
+
+build(){
+  GRPC_CPP_PLUGIN=/usr/bin/grpc_cpp_plugin \
+  CUDA_HOME=/opt/cuda \
+  ZSTD_ROOT=/usr \
+  ARROW_BUILD_TOOLCHAIN=/usr \
+  ORC_HOME=/usr \
+  DOUBLE_CONVERSION_HOME=/usr \
+  cmake \
+    -B build -S arrow-apache-arrow-${pkgver}/cpp \
+    -DCMAKE_INSTALL_PREFIX="/usr" \
+    -DCMAKE_INSTALL_LIBDIR="lib" \
+    -DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-10 \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DARROW_DEPENDENCY_SOURCE=SYSTEM \
+    -DARROW_BUILD_TESTS=ON \
+    -DARROW_BUILD_UTILITIES=ON \
+    -DARROW_ALTIVEC=OFF \
+    -DARROW_COMPUTE=ON \
+    -DARROW_FLIGHT=OFF \
+    -DARROW_GANDIVA=OFF \
+    -DARROW_IPC=ON \
+    -DARROW_JEMALLOC=ON \
+    -DARROW_ORC=ON \
+    -DARROW_PARQUET=ON \
+    -DARROW_PLASMA=OFF \
+    -DARROW_PYTHON=ON \
+    -DARROW_TENSORFLOW=ON \
+    -DARROW_SIMD_LEVEL=AVX512 \
+    -DARROW_PROTOBUF_USE_SHARED=ON \
+    -DARROW_GFLAGS_USE_SHARED=ON \
+    -DARROW_USE_GLOG=ON \
+    -DARROW_WITH_ZSTD=OFF \
+    -DARROW_WITH_BROTLI=ON \
+    -DARROW_WITH_RE2=ON \
+    -DARROW_WITH_SNAPPY=ON \
+    -DARROW_DATASET=ON \
+    -DARROW_JSON=ON \
+    -DARROW_CSV=ON \
+    -DARROW_CUDA=ON
+# sed -i -e 's/GRPC_CPP_PLUGIN-NOTFOUND/\/usr\/bin\/grpc_cpp_plugin/g' ./src/arrow/flight/CMakeFiles/flight_grpc_gen.dir/build.make
+# sed -i -e 's/GRPC_CPP_PLUGIN-NOTFOUND/\/usr\/bin\/grpc_cpp_plugin/g' build/src/arrow/flight/CMakeFiles/flight_grpc_gen.dir/build.make
+
+ DESTDIR="${pkgdir}" 
+   make -C build -j15
+}
+
+# check(){
+#   PARQUET_TEST_DATA="${srcdir}"/parquet-testing/data \
+#   ARROW_TEST_DATA="${srcdir}"/arrow-testing/data \
+#   make -C build test
+#}
+
+package_arrow-cuda(){
+  provides=(parquet-cpp arrow)
+  make -C build -j15 DESTDIR="${pkgdir}" install
+  find "${pkgdir}"/usr/lib/ -name '*testing*' -delete
+}
+
+package_python-pyarrow-cuda(){
+  provides=(python-pyarrow)
+  depends=(arrow git cmake cython python-setuptools python-setuptools-scm python-numpy)
+  cd ${_pkg}-${pkgver}/python
+  CUDA_HOME=/opt/cuda \
+  ARROW_HOME=/usr \
+  PARQUET_HOME=/usr \
+  ORC_HOME=/usr \
+  ARROW_BUILD_TOOLCHAIN=/usr \
+  python setup.py build_ext -j15  --build-type=release \
+    --with-parquet \
+    --with-tensor \
+    --with-dataset \
+    --with-orc \
+    --with-cuda \
+    --library-dir=${srcdir}/build/release install \
+    --single-version-externally-managed --record=record.txt --prefix=/usr --root="${pkgdir}" # --skip-build
+
+  mkdir -p ${pkgdir}/usr/lib/python3.9/site-packages/pyarrow/
+  local site_packages=$(python -c "import site; print(site.getsitepackages()[0])")
+  find . -name '*.cpython-39-x86_64-linux-gnu.so' | xargs -I{} install -Dm755 {} ${pkgdir}/usr/lib/python3.9/site-packages/pyarrow/
+  # install -Dm755  pyarrow/_cuda.cpython-39-x86_64-linux-gnu.so ${pkgdir}/usr/lib/python3.9/site-packages/pyarrow/
+  # install -Dm755  pyarrow/_dataset.cpython-39-x86_64-linux-gnu.so ${pkgdir}/usr/lib/python3.9/site-packages/pyarrow/
+  # install -Dm755  pyarrow/_orc.cpython-39-x86_64-linux-gnu.so ${pkgdir}/usr/lib/python3.9/site-packages/pyarrow/
+  # install -Dm755  pyarrow/_parquet.cpython-39-x86_64-linux-gnu.so ${pkgdir}/usr/lib/python3.9/site-packages/pyarrow/
+  # Headers and binary already packaged in arrow
+  # rm -r "${pkgdir}"${site_packages}/pyarrow/{include/{arrow,plasma},plasma-store-server}
+  # ln -s /usr/include/arrow "${pkgdir}"${site_packages}/pyarrow/include/arrow
+  # ln -s /usr/include/plasma "${pkgdir}"${site_packages}/pyarrow/include/plasma
+  # ln -s /usr/bin/plasma-store-server "${pkgdir}"${site_packages}/pyarrow/plasma-store-server
+}
+

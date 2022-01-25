@@ -1,0 +1,19 @@
+*** arrow-apache-arrow-6.0.1/cpp/cmake_modules/ThirdpartyToolchain.cmake-dist	2022-01-09 20:40:27.133847192 +0900
+--- arrow-apache-arrow-6.0.1/cpp/cmake_modules/ThirdpartyToolchain.cmake	2022-01-09 20:40:56.797514697 +0900
+***************
+*** 2163,2169 ****
+                       PC_PACKAGE_NAMES
+                       libzstd
+                       REQUIRED_VERSION
+!                      1.4.0)
+  
+    if(TARGET zstd::libzstd)
+      set(ARROW_ZSTD_LIBZSTD zstd::libzstd)
+--- 2163,2169 ----
+                       PC_PACKAGE_NAMES
+                       libzstd
+                       REQUIRED_VERSION
+!                      1.5.1)
+  
+    if(TARGET zstd::libzstd)
+      set(ARROW_ZSTD_LIBZSTD zstd::libzstd)

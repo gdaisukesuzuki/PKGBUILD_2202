@@ -1,0 +1,24 @@
+*** cudf/cpp/src/binaryop/compiled/util.cpp-dist	2021-08-04 21:21:43.879532154 +0900
+--- cudf/cpp/src/binaryop/compiled/util.cpp	2021-08-04 21:22:21.063567838 +0900
+***************
+*** 14,19 ****
+--- 14,20 ----
+   * limitations under the License.
+   */
+  
++ #include <optional>
+  #include "operation.cuh"
+  
+  #include <cudf/binaryop.hpp>
+*** cudf/cpp/include/cudf/strings/replace_re.hpp-dist	2022-01-12 15:59:38.198708846 +0900
+--- cudf/cpp/include/cudf/strings/replace_re.hpp	2022-01-12 15:59:49.155567510 +0900
+***************
+*** 15,20 ****
+--- 15,21 ----
+   */
+  #pragma once
+  
++ #include <optional>
+  #include <cudf/column/column.hpp>
+  #include <cudf/scalar/scalar.hpp>
+  #include <cudf/strings/regex/flags.hpp>

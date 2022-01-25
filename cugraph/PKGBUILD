@@ -1,0 +1,165 @@
+# Maintainer: Sven-Hendrik Haase <svenstaro@gmail.com>
+# Contributor: bartus <arch-user-repoᘓbartus.33mail.com>
+# Contributor: bartus <arch-user-repoᘓbartus.33mail.com>
+# Contributor: pingplug <pingplug@foxmail.com>
+# Contributor: cornholio <vigo.the.unholy.carpathian@gmail.com>
+
+pkgname=(cugraph python-cugraph)
+_pkgname=cugraph
+# _pkgname2=hornet
+pkgver=22.02
+_pkgver=22.02
+pkgrel=0
+pkgdesc="RAPIDS ML"
+arch=('x86_64')
+url="https://rapids.ai/"
+license=('custom')
+#depends=('rapids-cudf'  'cuda' 'cmake' 'python' 'cython' 'libcypher-parser'  )
+depends=('raft' 'cuda' 'cmake'  'spdlog' 'faiss' 'gunrock' )
+# depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'python' 'cython' 'libcypher-parser-static')
+# depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'python' 'cython' 'libcypher-parser-static' 'hortnet')
+# depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'python' 'cython' 'libcypher-parser-static' 'gunrock-static')
+# source=("${_pkgname}::git+https://github.com/rapidsai/cugraph.git"
+# source=("${_pkgname}::git+https://github.com/rapidsai/cugraph.git#branch=branch-21.12"
+# source=("${_pkgname}::git+https://github.com/rapidsai/cugraph.git#tag=v${_pkgver}"
+source=("${_pkgname}::git+https://github.com/rapidsai/cugraph.git#branch=branch-22.02"
+#  "git+https://github.com/hornet-gt/hornet.git"
+   # "error_utils.h.patch" "renumber.cuh.patch"
+#   "cmake.patch"
+   "cc.patch"
+   "setup.py.patch"
+#  "https://raw.githubusercontent.com/hornet-gt/hornet/master/hornet/include/Hornet.hpp"
+  )
+#  "${_pkgname2}::git+https://github.com/hornet-gt/hornet.git#tag=0.19.0")
+
+# sha256sums=( 'SKIP')
+# sha256sums=('SKIP' 'SKIP')
+sha256sums=( 'SKIP' 'SKIP' 'SKIP')
+# sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+
+
+
+build() {
+  cd "${srcdir}"
+#  patch -p0 < CMakeLists.txt.patch
+#  patch -p0 < testCmakeLists.txt.patch
+#  rm cugraph/cpp/cmake/Modules/FindNCCL.cmake
+#  patch -p0 < cusparse_helper.cu.patch
+#  patch -p0 < error_utils.h.patch
+#  patch -p0 < renumber.cuh.patch
+#   patch -p0 < setup.py.patch
+   patch -p0 < cc.patch
+#   patch -p0 < cmake.patch
+   patch -p0 < setup.py.patch
+  cd "${srcdir}/cugraph"
+  git submodule update --init --remote --recursive
+export REPODIR="${srcdir}"/cugraph
+export LIBCUGRAPH_BUILD_DIR=${LIBCUGRAPH_BUILD_DIR:=${REPODIR}/cpp/build}
+export CUGRAPH_BUILD_DIR=${REPODIR}/python/build
+export BUILD_DIRS="${LIBCUGRAPH_BUILD_DIR} ${CUGRAPH_BUILD_DIR}"
+export VERBOSE_FLAG=""
+export BUILD_TYPE=Release
+export INSTALL_TARGET=install
+export BUILD_DISABLE_DEPRECATION_WARNING=ON
+export BUILD_CPP_MG_TESTS=OFF
+export BUILD_TESTS=OFF
+export BUILD_STATIC_FAISS=ON
+export GPU_ARCH=""
+
+
+
+
+
+# export CXXFLAGS="$CFLAGS"
+
+  export CUDA_HOME=/opt/cuda
+  export CUDA_BIN_PATH=$CUDA_HOME/bin
+  export GPU_ARCHS=86
+export CC=/usr/bin/gcc
+export CXX=/usr/bin/g++
+
+   #  -DPARALLEL_LEVEL=6 \
+   # -DENABLE_PROTOBUF=ON \
+    mkdir -p ${LIBCUGRAPH_BUILD_DIR}
+    cd ${LIBCUGRAPH_BUILD_DIR}
+    cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} \
+          -DCMAKE_CUDA_ARCHITECTURES=86 \
+          -DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-10 \
+          -DCMAKE_CXX_COMPILER=/usr/bin/g++ \
+          -DCMAKE_C_COMPILER=/usr/bin/gcc \
+          -DBUILD_TESTS=OFF \
+          -DDISABLE_DEPRECATION_WARNING=${BUILD_DISABLE_DEPRECATION_WARNING} \
+          -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
+          -DCMAKE_C_COMPILER=/usr/bin/gcc \
+          -DCMAKE_CXX_COMPILER=/usr/bin/g++ \
+          -DBUILD_STATIC_FAISS=${BUILD_STATIC_FAISS} \
+          -DBUILD_CUGRAPH_MG_TESTS=${BUILD_CPP_MG_TESTS} \
+          -DBUILD_TESTS=${BUILD_TESTS} \
+          ${REPODIR}/cpp
+
+    # sed -i -e 's/diag_suppress/nv_diag_suppress/g' _deps/libcudacxx-src/include/cuda/std/chrono
+    # sed -i -e 's/nv_nv_diag_suppress/nv_diag_suppress/g' _deps/libcudacxx-src/include/cuda/std/chrono
+
+        cd ${REPODIR}/cpp/build
+        
+        # find . -name 'flags.make' | xargs sed -i -e 's/-DCUDA_API_PER_THREAD_DEFAULT_STREAM/-D_GLIBCXX_USE_CXX11_ABI=0 -DDCUDA_API_PER_THREAD_DEFAULT_STREAM/g'
+        find . -name 'link.txt' | xargs sed -i -e 's/-lpthread/-lpthread -lspdlog/g'
+        # find . -name 'link.txt' | xargs sed -i -e 's/-lpthread/-lpthread -lfmt -lspdlog/g'
+        # find . -name 'link.txt' | xargs sed -i -e 's/-lpthread/-lpthread -lcudf -lfmt -lspdlog/g'
+        # find . -name 'link.txt' | xargs sed -i -e 's/-lpthread/-lpthread -lgtest -lgmock -lgtest_main -lcudf -lfmt -lspdlog/g'
+#
+# Gunrock 
+        # make -j$(($(nproc)-2)) VERBOSE=1
+        # cmake --build "${LIBCUGRAPH_BUILD_DIR}" -j$(($(nproc)-2)) --target 
+
+  cd "${srcdir}"/cugraph/python
+         # env PARALLEL_LEVEL=$(($(nproc)-2)) CUGRAPH_BUILD_PATH=${CUGRAPH_BUILD_PATH} python setup.py build_ext -j$(($(nproc)-2)) --inplace --library-dir=${LIBCUGRAPH_BUILD_DIR}
+         # env CUGRAPH_BUILD_PATH=${CUGRAPH_BUILD_PATH} python setup.py build_ext $(($(nproc)-2)) --inplace --library-dir=${LIBCUGRAPH_BUILD_DIR}
+
+
+}
+
+package_cugraph() {
+  privides=('cugraph')
+  cd "${srcdir}"/cugraph/cpp/build
+  DESTDIR="${pkgdir}/usr" cmake --build "${srcdir}"/cugraph/cpp/build -v -j12 --target cugraph install
+
+  # make DESTDIR="${pkgdir}"/usr install
+  install -Dm644 ${srcdir}/cugraph/LICENSE ${pkgdir}/usr/share/licenses/cugraph/LICENSE
+  cd "${pkgdir}/usr/include/cugraph"
+  rm -rf ${pkgdir}/usr/include/cuco
+  rm -rf ${pkgdir}/usr/include/raft
+  rm -rf ${pkgdir}/usr/include/rapids
+  rm -rf ${pkgdir}/usr/include/rmm
+  rm -rf ${pkgdir}/usr/lib/cmake/libcudacxx
+  rm -rf ${pkgdir}/usr/lib/cmake/cuco
+  rm -rf ${pkgdir}/usr/lib/cmake/cub
+  rm -rf ${pkgdir}/usr/lib/cmake/raft
+  rm -rf ${pkgdir}/usr/lib/cmake/thrust
+  rm -rf ${pkgdir}/usr/lib/cmake/rmm
+  # rm ${pkgdir}/usr/lib/libcudftestutil
+# mv cugraph/version_config.hpp cugraph/cugraph/
+# mv cugraph cugraph-old
+# mv cugraph-old/cugraph .
+# mv cugraph-old/raft .
+# rmdir cugraph-old 
+
+}
+
+package_python-cugraph(){
+ depends=('python-raft' 'python-ucx' 'cugraph' 'python-faiss' 'python-cudf' )
+  cd "${srcdir}"/cugraph/python/pylibcugraph
+  export LD_LIBRARY_PATH=/opt/cuda/lib64:$LD_LIBRARY_PATH:"${pkgdir}"/usr/lib/cugraph
+  CMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-10 \
+  python setup.py build_ext --library-dir="${srcdir}"/cugraph/cpp/build --include-dir="${srcdir}"/cugraph/cpp/include -j12 install  --single-version-externally-managed --record=record.txt --prefix=/usr --root="${pkgdir}" --optimize=1
+  cd "${srcdir}"/cugraph/python/cugraph
+  CMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-10 \
+  python setup.py build_ext --library-dir="${srcdir}"/cugraph/cpp/build --include-dir="${srcdir}"/cugraph/cpp/include -j12 install  --single-version-externally-managed --record=record.txt --prefix=/usr --root="${pkgdir}" --optimize=1
+  # env CUGRAPH_BUILD_PATH=${CUGRAPH_BUILD_PATH} python setup.py install  --prefix=/usr --root="${pkgdir}" --optimize=1
+  install -Dm644 ${srcdir}/cugraph/LICENSE ${pkgdir}/usr/share/licenses/python-cugraph/LICENSE
+
+}
+
+
+
+# vim:set ts=2 sw=2 et:

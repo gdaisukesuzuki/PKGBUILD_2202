@@ -1,0 +1,36 @@
+*** cudf/cpp/cmake/thirdparty/get_dlpack.cmake-dist	2021-11-02 16:12:04.554971413 +0900
+--- cudf/cpp/cmake/thirdparty/get_dlpack.cmake	2021-11-02 16:12:13.538374641 +0900
+***************
+*** 32,37 ****
+      endif()
+  endfunction()
+  
+! set(CUDF_MIN_VERSION_dlpack 0.5)
+  
+  find_and_configure_dlpack(${CUDF_MIN_VERSION_dlpack})
+--- 32,37 ----
+      endif()
+  endfunction()
+  
+! set(CUDF_MIN_VERSION_dlpack 0.6)
+  
+  find_and_configure_dlpack(${CUDF_MIN_VERSION_dlpack})
+*** cudf/cpp/cmake/thirdparty/get_arrow.cmake-dist	2021-12-05 22:12:02.259095773 +0900
+--- cudf/cpp/cmake/thirdparty/get_arrow.cmake	2021-12-05 22:16:27.487553573 +0900
+***************
+*** 308,314 ****
+  
+  endfunction()
+  
+! set(CUDF_VERSION_Arrow 5.0.0)
+  
+  find_and_configure_arrow(
+    ${CUDF_VERSION_Arrow} ${CUDF_USE_ARROW_STATIC} ${CUDF_ENABLE_ARROW_S3} ${CUDF_ENABLE_ARROW_ORC}
+--- 308,314 ----
+  
+  endfunction()
+  
+! set(CUDF_VERSION_Arrow 6.0.1)
+  
+  find_and_configure_arrow(
+    ${CUDF_VERSION_Arrow} ${CUDF_USE_ARROW_STATIC} ${CUDF_ENABLE_ARROW_S3} ${CUDF_ENABLE_ARROW_ORC}
