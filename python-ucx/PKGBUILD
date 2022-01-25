@@ -15,7 +15,7 @@ url="https://rapids.ai/"
 license=('custom')
 depends=('openucx' 'python-numpy' 'python-psutil' 'python-cudf')
 # source=("${_pkgname}::git+https://github.com/rapidsai/ucx-py.git#tag=v${_pkgver}"
-source=("${_pkgname}::git+https://github.com/rapidsai/ucx-py.git"
+source=("${_pkgname}::git+https://github.com/rapidsai/ucx-py.git#branch=branch-${pkgver}"
   # "CMakeLists.txt.patch" # "error_utils.h.patch" "renumber.cuh.patch"
   # "setup.py.patch"
 #  "https://raw.githubusercontent.com/hornet-gt/hornet/master/hornet/include/Hornet.hpp"
