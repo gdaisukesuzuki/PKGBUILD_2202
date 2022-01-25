@@ -25,7 +25,7 @@ depends=('raft' 'cumlprims' 'treelite' 'faiss' 'cudf' 'nccl'  'cuda' 'cmake' 'bo
 # source=("${_pkgname}::git+https://github.com/rapidsai/cudf.git"
 # source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git#tag=v${_pkgver}"
 source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git#branch=branch-22.02"
- "cc.patch" "cu.patch" "cmake.patch" "setup.py.patch" )
+ "cc.patch" "cu.patch"  "setup.py.patch" )
 # source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git#branch=branch-${_pkgver}" "cc.patch" "cu.patch" "cmake.patch")
 # source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git#tag=v0.19.0")
 #  "orc.hpp.patch"
@@ -37,14 +37,14 @@ source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git#branch=branch-22.
 
 # sha256sums=('SKIP' 'SKIP')
 # sha256sums=('SKIP')
-sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP')
 
 
 prepare() {
   cd "${srcdir}"
 #  patch -p0 < cu.patch
   patch -p0 < cc.patch
-  patch -p0 < cmake.patch
+#  patch -p0 < cmake.patch
   patch -p0 < setup.py.patch
 #   patch -p0 < nvst_CMakeLists.txt.patch
 #   patch -p0 < gather.cu.patch 
