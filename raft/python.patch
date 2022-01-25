@@ -1,0 +1,55 @@
+*** raft/python/setup.py-dist	2022-01-19 22:54:01.997226851 +0900
+--- raft/python/setup.py	2022-01-19 22:57:10.783800516 +0900
+***************
+*** 102,108 ****
+  # - Cython extensions build and parameters -----------------------------------
+  
+  
+! libs = ["nccl", "cusolver", "cusparse", "cublas"]
+  
+  include_dirs = [cuda_include_dir,
+                  numpy.get_include(),
+--- 102,108 ----
+  # - Cython extensions build and parameters -----------------------------------
+  
+  
+! libs = ["nccl", "cusolver", "cusparse", "cublas", "curand", "cuda", "cudart", "fmt", "spdlog"]
+  
+  include_dirs = [cuda_include_dir,
+                  numpy.get_include(),
+***************
+*** 113,119 ****
+      Extension("*",
+                sources=["raft/**/*.pyx"],
+                include_dirs=include_dirs,
+!               library_dirs=[get_python_lib()],
+                runtime_library_dirs=[cuda_lib_dir,
+                                      os.path.join(os.sys.prefix, "lib")],
+                libraries=libs,
+--- 113,119 ----
+      Extension("*",
+                sources=["raft/**/*.pyx"],
+                include_dirs=include_dirs,
+!               library_dirs=[get_python_lib(), cuda_lib_dir, os.path.join(os.sys.prefix, "lib")],
+                runtime_library_dirs=[cuda_lib_dir,
+                                      os.path.join(os.sys.prefix, "lib")],
+                libraries=libs,
+*** raft/python/raft/test/test_comms.py-dist	2022-01-22 00:20:24.506297332 +0900
+--- raft/python/raft/test/test_comms.py	2022-01-22 22:16:48.869727132 +0900
+***************
+*** 21,27 ****
+  from dask.distributed import wait
+  
+  try:
+!     from raft.dask import Comms
+      from raft.dask.common import local_handle
+      from raft.dask.common import perform_test_comms_send_recv
+      from raft.dask.common import perform_test_comms_device_send_or_recv
+--- 21,27 ----
+  from dask.distributed import wait
+  
+  try:
+!     from raft.dask.common.comms import Comms
+      from raft.dask.common import local_handle
+      from raft.dask.common import perform_test_comms_send_recv
+      from raft.dask.common import perform_test_comms_device_send_or_recv

@@ -1,0 +1,33 @@
+*** nvtx-0.2.3/setup.py-dist	2021-11-15 20:29:44.365519557 +0900
+--- nvtx-0.2.3/setup.py	2021-11-15 20:31:29.850383432 +0900
+***************
+*** 20,31 ****
+  except Exception:
+      nthreads = 0
+  
+  extensions = [
+      Extension(
+          "*",
+          sources=cython_files,
+!         include_dirs=[os.path.dirname(sysconfig.get_path("include")),],
+!         library_dirs=[get_python_lib()],
+          language="c",
+      )
+  ]
+--- 20,35 ----
+  except Exception:
+      nthreads = 0
+  
++ CUDA_HOME = os.environ.get("CUDA_HOME", False)
++ cuda_include_dir = os.path.join(CUDA_HOME, "include")
++ cuda_lib_dir = os.path.join(CUDA_HOME, "lib64")
++ 
+  extensions = [
+      Extension(
+          "*",
+          sources=cython_files,
+!         include_dirs=[os.path.dirname(sysconfig.get_path("include")),cuda_include_dir,],
+!         library_dirs=[get_python_lib(),cuda_lib_dir,],
+          language="c",
+      )
+  ]

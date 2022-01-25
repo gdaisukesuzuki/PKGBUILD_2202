@@ -1,0 +1,48 @@
+*** raft/cpp/include/raft/common/cub_wrappers.cuh-dist	2022-01-14 15:37:43.356426295 +0900
+--- raft/cpp/include/raft/common/cub_wrappers.cuh	2022-01-14 15:41:27.639861604 +0900
+***************
+*** 44,53 ****
+  {
+!   size_t worksize;
+    cub::DeviceRadixSort::SortPairs(
+      nullptr, worksize, inKeys, outKeys, inVals, outVals, len, 0, sizeof(KeyT) * 8, stream);
+    workspace.resize(worksize, stream);
+    cub::DeviceRadixSort::SortPairs(
+      workspace.data(), worksize, inKeys, outKeys, inVals, outVals, len, 0, sizeof(KeyT) * 8, stream);
+  }
+  
+  }  // namespace raft
+--- 44,53 ----
+  {
+!   size_t worksize = 0;
+    cub::DeviceRadixSort::SortPairs(
+      nullptr, worksize, inKeys, outKeys, inVals, outVals, len, 0, sizeof(KeyT) * 8, stream);
+    workspace.resize(worksize, stream);
+    cub::DeviceRadixSort::SortPairs(
+      workspace.data(), worksize, inKeys, outKeys, inVals, outVals, len, 0, sizeof(KeyT) * 8, stream);
+  }
+  
+  }  // namespace raft
+*** raft/cpp/test/sparse/sort.cu-dist	2022-01-15 19:37:06.839494720 +0900
+--- raft/cpp/test/sparse/sort.cu	2022-01-15 19:39:49.878890059 +0900
+***************
+*** 60,68 ****
+  
+    r.uniform(in_vals.data(), params.nnz, float(-1.0), float(1.0), stream);
+  
+!   int* in_rows_h = (int*)malloc(params.nnz * sizeof(int));
+!   int* in_cols_h = (int*)malloc(params.nnz * sizeof(int));
+!   int* verify_h  = (int*)malloc(params.nnz * sizeof(int));
+  
+    for (int i = 0; i < params.nnz; i++) {
+      in_rows_h[i] = params.nnz - i - 1;
+--- 60,68 ----
+  
+    r.uniform(in_vals.data(), params.nnz, float(-1.0), float(1.0), stream);
+  
+!   int* in_rows_h = new int[params.nnz];
+!   int* in_cols_h = new int[params.nnz];
+!   int* verify_h  = new int[params.nnz];
+  
+    for (int i = 0; i < params.nnz; i++) {
+      in_rows_h[i] = params.nnz - i - 1;

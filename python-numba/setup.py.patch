@@ -1,0 +1,40 @@
+*** numba-0.55.0/setup.py-dist	2022-01-02 18:37:40.495083071 +0900
+--- numba-0.55.0/setup.py	2022-01-02 18:41:05.487820970 +0900
+***************
+*** 23,29 ****
+  max_python_version = "3.11"  # exclusive
+  min_numpy_build_version = "1.11"
+  min_numpy_run_version = "1.18"
+! max_numpy_run_version = "1.22"
+  min_llvmlite_version = "0.38.0rc1"
+  max_llvmlite_version = "0.39"
+  
+--- 23,29 ----
+  max_python_version = "3.11"  # exclusive
+  min_numpy_build_version = "1.11"
+  min_numpy_run_version = "1.18"
+! max_numpy_run_version = "1.23"
+  min_llvmlite_version = "0.38.0rc1"
+  max_llvmlite_version = "0.39"
+  
+*** numba-0.55.0/numba/__init__.py-dist	2022-01-02 18:42:47.022481671 +0900
+--- numba-0.55.0/numba/__init__.py	2022-01-02 18:43:10.789507344 +0900
+***************
+*** 136,143 ****
+  
+      if numpy_version < (1, 18):
+          raise ImportError("Numba needs NumPy 1.18 or greater")
+!     elif numpy_version > (1, 21):
+!         raise ImportError("Numba needs NumPy 1.21 or less")
+  
+      try:
+          import scipy
+--- 136,143 ----
+  
+      if numpy_version < (1, 18):
+          raise ImportError("Numba needs NumPy 1.18 or greater")
+!     elif numpy_version > (1, 22):
+!         raise ImportError("Numba needs NumPy 1.22 or less")
+  
+      try:
+          import scipy
