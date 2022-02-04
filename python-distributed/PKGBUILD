@@ -2,7 +2,7 @@
 
 _pkg=distributed
 pkgname=python-${_pkg}
-pkgver=2022.1.0
+pkgver=2022.1.1
 pkgrel=1
 pkgdesc="Distributed task scheduler for Dask"
 arch=(x86_64)

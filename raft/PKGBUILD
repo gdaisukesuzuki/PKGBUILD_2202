@@ -3,7 +3,7 @@
 # Contributor: pingplug <pingplug@foxmail.com>
 # Contributor: cornholio <vigo.the.unholy.carpathian@gmail.com>
 
-pkgname=(raft python-raft)
+pkgname=(curaft python-curaft)
 _pkgname=raft
 #conflicts=(spdlog)
 # pkgver=0.19.0
@@ -16,12 +16,12 @@ arch=('x86_64')
 url="https://rapids.ai/"
 license=('custom')
 # depends=('fmt'  'cython' 'cuda' 'cmake' 'python-numba' )
-depends=('cuda' 'cmake' 'faiss' 'rmm' )
+depends=( 'cuda' 'cmake' 'faiss' 'rmm' )
 # depends=( 'spdlog'  'cuda' 'cmake'  )
 # depends=('spdlog' 'cython' 'cuda' 'cmake' 'python-numba' 'fmt')
 # depends=('gcc9' 'cython' 'cuda' 'cmake' 'python-numba' 'spdlog')
 # source=("${_pkgname}::git+https://github.com/rapidsai/rmm.git")
-# source=("${_pkgname}::git+https://github.com/rapidsai/rmm.git#tag=v${_pkgver}"
+# source=("${_pkgname}::git+https://github.com/rapidsai/raft.git#tag=v${_pkgver}"
 source=("${_pkgname}::git+https://github.com/rapidsai/raft.git#branch=branch-${pkgver}"
      "python.patch"
       "cu.patch"
@@ -44,7 +44,7 @@ build() {
 #  ./build.sh -v -n rmm
 }
 
-package_raft() {
+package_curaft() {
  cd "${srcdir}"/raft/cpp
         cmake -DCMAKE_INSTALL_PREFIX="/usr" \
               -DCUDA_STATIC_RUNTIME=OFF \
@@ -79,12 +79,12 @@ cmake --build  "${srcdir}"/raft/build -j12  --target install DESTDIR="${pkgdir}"
 
 #  mkdir -p ${pkgdir}/usr/include
 
-  install -Dm644 ${srcdir}/raft/LICENSE ${pkgdir}/usr/share/licenses/raft/LICENSE
+  install -Dm644 ${srcdir}/raft/LICENSE ${pkgdir}/usr/share/licenses/curaft/LICENSE
   rm -rf ${pkgdir}/home
 }
 
-package_python-raft() {
-   depends=( 'cuda-python' 'raft' 'cython' 'python-setuptools' 'python-numba' 'python-rmm' )
+package_python-curaft() {
+   depends=( 'cuda-python' 'curaft' 'cython' 'python-setuptools' 'python-numba' 'python-rmm' )
 
 #  cd "${srcdir}"/rmm/build
 #  make DESTDIR="${pkgdir}" install
@@ -109,7 +109,7 @@ package_python-raft() {
      cp -pr $x ${pkgdir}/usr/lib/python3.10/site-packages/$x
   done
 
-  install -Dm644 ${srcdir}/raft/LICENSE ${pkgdir}/usr/share/licenses/python-raft/LICENSE
+  install -Dm644 ${srcdir}/raft/LICENSE ${pkgdir}/usr/share/licenses/python-curaft/LICENSE
   rm -rf ${pkgdir}/home
 }
 

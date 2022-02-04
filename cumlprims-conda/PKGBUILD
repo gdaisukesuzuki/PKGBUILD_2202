@@ -3,7 +3,7 @@
 pkgname=cumlprims-conda
 provides=(cumlprims)
 pkgver=22.02
-pkgrel=0
+pkgrel=1
 pkgdesc=""
 arch=('x86_64')
 url="https://anaconda.org/rapidsai-nightly/libcumlprims/files"
@@ -15,7 +15,8 @@ depends=('cuda' 'rmm')
 # source=(https://anaconda.org/rapidsai-nightly/libcumlprims/21.08.00a210804/download/linux-64/libcumlprims-21.08.00a210804-cuda11.4_g4db0971_5.tar.bz2
 # https://anaconda.org/nvidia/libcumlprims/21.12.00/download/linux-64/libcumlprims-21.12.00-cuda11_g0a7f19f_0.tar.bz2
 source=(
-https://anaconda.org/rapidsai-nightly/libcumlprims/22.02.00a220124/download/linux-64/libcumlprims-22.02.00a220124-cuda11_g07ef25f_19.tar.bz2
+# https://anaconda.org/rapidsai-nightly/libcumlprims/22.02.00a220125/download/linux-64/libcumlprims-22.02.00a220125-cuda11_g07ef25f_19.tar.bz2
+https://anaconda.org/nvidia/libcumlprims/22.02.00/download/linux-64/libcumlprims-22.02.00-cuda11_g2207299_0.tar.bz2
 "cc.patch" )
 sha512sums=('SKIP' 'SKIP')
 

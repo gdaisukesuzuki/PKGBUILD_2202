@@ -5,37 +5,18 @@
                     cuda_lib_dir,
                     os.path.join(os.sys.prefix, "lib")
                 ],
-!               libraries=['cudart', 'cusparse', 'cusolver', 'cugraph', 'nccl'],
+!               libraries=['cudart', 'cusparse', 'cusolver', 'cugraph', 'nccl',
+                           'cugraph_c'],
                 language='c++',
                 extra_compile_args=['-std=c++17'])
-  ]
 --- 130,136 ----
                     cuda_lib_dir,
                     os.path.join(os.sys.prefix, "lib")
                 ],
-!               libraries=['cudart', 'cusparse', 'cusolver', 'cugraph', 'nccl', 'spdlog', 'fmt'],
+!               libraries=['cudart', 'cusparse', 'cusolver', 'cugraph', 'nccl', 'spdlog', 'fmt',
+                           'cugraph_c'],
                 language='c++',
                 extra_compile_args=['-std=c++17'])
-  ]
-***************
-*** 149,155 ****
-            # "Operating System :: OS Independent",
-            "Programming Language :: Python",
-            "Programming Language :: Python :: 3.6",
-!           "Programming Language :: Python :: 3.7"
-        ],
-        # Include the separately-compiled shared library
-        author="NVIDIA Corporation",
---- 149,157 ----
-            # "Operating System :: OS Independent",
-            "Programming Language :: Python",
-            "Programming Language :: Python :: 3.6",
-!           "Programming Language :: Python :: 3.7",
-!           "Programming Language :: Python :: 3.8",
-!           "Programming Language :: Python :: 3.9"
-        ],
-        # Include the separately-compiled shared library
-        author="NVIDIA Corporation",
 *** cugraph/python/cugraph/setup.py-dist	2021-09-24 08:36:06.075011328 +0900
 --- cugraph/python/cugraph/setup.py	2021-09-24 08:36:47.899120694 +0900
 ***************
@@ -55,22 +36,3 @@
                 language='c++',
                 extra_compile_args=['-std=c++17'])
   ]
-***************
-*** 193,199 ****
-            # "Operating System :: OS Independent",
-            "Programming Language :: Python",
-            "Programming Language :: Python :: 3.6",
-!           "Programming Language :: Python :: 3.7"
-        ],
-        # Include the separately-compiled shared library
-        author="NVIDIA Corporation",
---- 193,201 ----
-            # "Operating System :: OS Independent",
-            "Programming Language :: Python",
-            "Programming Language :: Python :: 3.6",
-!           "Programming Language :: Python :: 3.7",
-!           "Programming Language :: Python :: 3.8",
-!           "Programming Language :: Python :: 3.9"
-        ],
-        # Include the separately-compiled shared library
-        author="NVIDIA Corporation",

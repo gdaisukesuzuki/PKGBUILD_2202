@@ -2,7 +2,7 @@
 
 _pkg=dask
 pkgname=python-${_pkg}
-pkgver=2022.1.0
+pkgver=2022.1.1
 pkgrel=1
 pkgdesc="Parallel computing with task scheduling"
 arch=(any)

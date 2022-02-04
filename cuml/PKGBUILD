@@ -6,13 +6,13 @@
 pkgname=(cuml python-cuml)
 _pkgname=cuml
 pkgver=22.02
-_pkgver=22.02
-pkgrel=0
+_pkgver=22.02.00
+pkgrel=1
 pkgdesc="RAPIDS Memory Manager"
 arch=('x86_64')
 url="https://rapids.ai/"
 license=('custom')
-depends=('raft' 'cumlprims' 'treelite' 'faiss' 'cudf' 'nccl'  'cuda' 'cmake' 'boost-libs'  'protobuf')
+depends=('curaft' 'cumlprims' 'treelite' 'faiss' 'cudf' 'nccl'  'cuda' 'cmake' 'boost-libs'  'protobuf')
 # depends=( 'cumlprims' 'treelite' 'cudf' 'nccl' 'cuda' 'cmake' 'boost-libs'  'protobuf'  'faiss')
 # depends=( 'treelite' 'cudf' 'nccl' 'cuda' 'cmake' 'boost-libs'  'protobuf'  'cumlprims')
 # depends=('faiss-cuda' 'cudf' 'nccl' 'cuda' 'cmake' 'boost-libs'  'protobuf' 'treelite' 'cumlprims')
@@ -23,8 +23,8 @@ depends=('raft' 'cumlprims' 'treelite' 'faiss' 'cudf' 'nccl'  'cuda' 'cmake' 'bo
 # makedepends=('python-cmake_setuptools' 'protobuf-static')
 # depends=('arrow-cudf<0.16.0' 'gcc8' 'cuda' 'cmake' 'rapids-rmm' 'dlpack' 'boost-libs')
 # source=("${_pkgname}::git+https://github.com/rapidsai/cudf.git"
-# source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git#tag=v${_pkgver}"
-source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git#branch=branch-22.02"
+# source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git#branch=branch-22.02"
+source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git#tag=v${_pkgver}"
  "cc.patch" "cu.patch"  "setup.py.patch" )
 # source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git#branch=branch-${_pkgver}" "cc.patch" "cu.patch" "cmake.patch")
 # source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git#tag=v0.19.0")
@@ -42,7 +42,7 @@ sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP')
 
 prepare() {
   cd "${srcdir}"
-#  patch -p0 < cu.patch
+  patch -p0 < cu.patch
   patch -p0 < cc.patch
 #  patch -p0 < cmake.patch
   patch -p0 < setup.py.patch
@@ -68,6 +68,8 @@ export CLEAN=0
 export BUILD_DISABLE_DEPRECATION_WARNING=ON
 export BUILD_CUML_STD_COMMS=ON
 export BUILD_CPP_MG_TESTS=OFF
+# export BUILD_CPP_MG_TESTS=OFF
+# export BUILD_CPP_TESTS=ON
 export BUILD_CPP_TESTS=OFF
 # export BUILD_STATIC_FAISS=OFF
 export CMAKE_GENERATOR="Ninja"
@@ -112,6 +114,7 @@ build() {
           -DBUILD_CUML_MG_TESTS=${BUILD_CPP_MG_TESTS} \
           -DNVTX=${NVTX} \
           -DUSE_CCACHE=${CCACHE} \
+          -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
           -DCMAKE_PREFIX_PATH=${INSTALL_PREFIX} \
           -DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-10 \
           -DCMAKE_CXX_STANDARD=17 \
@@ -146,7 +149,7 @@ package_cuml() {
   # cd "${srcdir}"/cuml/cpp/build
 
   # make DESTDIR="${pkgdir}" install_cudf
-  DESTDIR="${pkgdir}"  cmake --build ${LIBCUML_BUILD_DIR}  -v -j${PARALLEL_LEVEL:-1} --target cuml++ cuml  install
+  DESTDIR="${pkgdir}"  cmake  --build ${LIBCUML_BUILD_DIR}  -v -j${PARALLEL_LEVEL:-1} --target cuml++ cuml  install
 #  DESTDIR="${pkgdir}"  cmake --build ${LIBCUML_BUILD_DIR} -v -j${PARALLEL_LEVEL:-1} --target cuml++ cuml ml prims install
  rm -rf "${pkgdir}"/home
  # cmake --build . -j$(nproc) --target install 
@@ -180,7 +183,7 @@ package_cuml() {
 
 package_python-cuml()
 {
-  depends=('python-raft' 'python-ucx' 'cuml' 'python-faiss' 'python-cudf' 'python-treelite' 'python-cupy' )
+  depends=('python-curaft' 'python-ucx' 'cuml' 'python-faiss' 'python-cudf' 'python-treelite' 'python-cupy' )
   # depends=('python-faiss-cuda' 'python-cudf' 'python-treelite' 'python-cupy')
   cd "${srcdir}/cuml/python"
   

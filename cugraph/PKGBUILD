@@ -8,21 +8,21 @@ pkgname=(cugraph python-cugraph)
 _pkgname=cugraph
 # _pkgname2=hornet
 pkgver=22.02
-_pkgver=22.02
-pkgrel=0
+_pkgver=22.02.00
+pkgrel=1
 pkgdesc="RAPIDS ML"
 arch=('x86_64')
 url="https://rapids.ai/"
 license=('custom')
 #depends=('rapids-cudf'  'cuda' 'cmake' 'python' 'cython' 'libcypher-parser'  )
-depends=('raft' 'cuda' 'cmake'  'spdlog' 'faiss' 'gunrock' )
+depends=('curaft' 'cuda' 'cmake'  'spdlog' 'faiss' 'gunrock' )
 # depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'python' 'cython' 'libcypher-parser-static')
 # depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'python' 'cython' 'libcypher-parser-static' 'hortnet')
 # depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'python' 'cython' 'libcypher-parser-static' 'gunrock-static')
 # source=("${_pkgname}::git+https://github.com/rapidsai/cugraph.git"
 # source=("${_pkgname}::git+https://github.com/rapidsai/cugraph.git#branch=branch-21.12"
-# source=("${_pkgname}::git+https://github.com/rapidsai/cugraph.git#tag=v${_pkgver}"
-source=("${_pkgname}::git+https://github.com/rapidsai/cugraph.git#branch=branch-22.02"
+# source=("${_pkgname}::git+https://github.com/rapidsai/cugraph.git#branch=branch-22.02"
+source=("${_pkgname}::git+https://github.com/rapidsai/cugraph.git#tag=v${_pkgver}"
 #  "git+https://github.com/hornet-gt/hornet.git"
    # "error_utils.h.patch" "renumber.cuh.patch"
 #   "cmake.patch"
@@ -147,7 +147,7 @@ package_cugraph() {
 }
 
 package_python-cugraph(){
- depends=('python-raft' 'python-ucx' 'cugraph' 'python-faiss' 'python-cudf' )
+ depends=('python-curaft' 'python-ucx' 'cugraph' 'python-faiss' 'python-cudf' )
   cd "${srcdir}"/cugraph/python/pylibcugraph
   export LD_LIBRARY_PATH=/opt/cuda/lib64:$LD_LIBRARY_PATH:"${pkgdir}"/usr/lib/cugraph
   CMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-10 \

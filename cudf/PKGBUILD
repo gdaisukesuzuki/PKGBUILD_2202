@@ -7,9 +7,9 @@ pkgname=(cudf python-cudf)
 _pkgname=cudf
 # pkgver=0.19.2
 pkgver=22.02
-_pkgver=21.12.02
+_pkgver=22.02.00
 # _pkgver=0.19.2
-pkgrel=0
+pkgrel=1
 pkgdesc="RAPIDS Memory Manager"
 arch=('x86_64')
 url="https://rapids.ai/"
@@ -29,8 +29,8 @@ depends=( 'nvcomp' 'rmm'  'nccl' 'cuda' 'cmake' 'boost-libs')
 # source=("${_pkgname}::git+https://github.com/rapidsai/cudf.git#branch=branch-${_pkgver}"
 # source=("${_pkgname}::git+https://github.com/rapidsai/cudf.git"
 # source=("${_pkgname}::git+https://github.com/rapidsai/cudf.git#branch=branch-${_pkgver}"
-# source=("${_pkgname}::git+https://github.com/rapidsai/cudf.git#tag=v${_pkgver}"
-source=("${_pkgname}::git+https://github.com/rapidsai/cudf.git#branch=branch-22.02"
+source=("${_pkgname}::git+https://github.com/rapidsai/cudf.git#tag=v${_pkgver}"
+# source=("${_pkgname}::git+https://github.com/rapidsai/cudf.git#branch=branch-22.02"
  "cu.patch"
  "cc.patch"
  "cmake.patch"

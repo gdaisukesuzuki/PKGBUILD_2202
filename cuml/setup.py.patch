@@ -21,21 +21,49 @@
   
           include_dirs = [
               '../cpp/src',
+*** cuml/python/cuml/manifold/umap.pyx-dist	2022-01-25 22:55:33.931640327 +0900
+--- cuml/python/cuml/manifold/umap.pyx	2022-01-25 23:14:48.295407566 +0900
 ***************
-*** 265,271 ****
-            "Intended Audience :: Developers",
-            "Programming Language :: Python",
-            "Programming Language :: Python :: 3.7",
-!           "Programming Language :: Python :: 3.8"
-        ],
-        author="NVIDIA Corporation",
-        setup_requires=['cython'],
---- 269,276 ----
-            "Intended Audience :: Developers",
-            "Programming Language :: Python",
-            "Programming Language :: Python :: 3.7",
-!           "Programming Language :: Python :: 3.8",
-!           "Programming Language :: Python :: 3.9"
-        ],
-        author="NVIDIA Corporation",
-        setup_requires=['cython'],
+*** 373,383 ****
+          else:
+              raise Exception("Initialization strategy not supported: %d" % init)
+  
+!         if a is None or b is None:
+!             a, b = self.find_ab_params(spread, min_dist)
+! 
+!         self.a = a
+!         self.b = b
+  
+          self.learning_rate = learning_rate
+          self.min_dist = min_dist
+--- 373,385 ----
+          else:
+              raise Exception("Initialization strategy not supported: %d" % init)
+  
+!         if a is None:
+!             self.a, self.b = self.find_ab_params(spread, min_dist)
+!         elif b is None:
+!             self.a, self.b = self.find_ab_params(spread, min_dist)
+!         else:
+!             self.a = a
+!             self.b = b
+  
+          self.learning_rate = learning_rate
+          self.min_dist = min_dist
+***************
+*** 470,476 ****
+          free(umap_params)
+  
+      @staticmethod
+!     def find_ab_params(spread, min_dist):
+          """ Function taken from UMAP-learn : https://github.com/lmcinnes/umap
+          Fit a, b params for the differentiable curve used in lower
+          dimensional fuzzy simplicial complex construction. We want the
+--- 472,478 ----
+          free(umap_params)
+  
+      @staticmethod
+!     def find_ab_params(self, spread, min_dist):
+          """ Function taken from UMAP-learn : https://github.com/lmcinnes/umap
+          Fit a, b params for the differentiable curve used in lower
+          dimensional fuzzy simplicial complex construction. We want the

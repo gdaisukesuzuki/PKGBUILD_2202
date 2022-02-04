@@ -5,8 +5,8 @@
 
 pkgname=('treelite' 'python-treelite')
 _pkgname=treelite
-pkgver=2.2.1
-_pkgver=2.2.1
+pkgver=2.2.2
+_pkgver=2.2.2
 pkgrel=1
 pkgdesc="decision tree"
 arch=('x86_64')
