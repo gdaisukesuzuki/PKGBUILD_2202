@@ -5,8 +5,8 @@
 
 pkgname=(python-nvtx)
 _pkgname=nvtx
-pkgver=0.2.3
-pkgrel=2
+pkgver=0.2.4
+pkgrel=1
 pkgdesc="NVIDIA Tool Extension Library"
 arch=('x86_64')
 url="https://nvidia.github.io/NVTX/doxygen/index.html"
@@ -15,7 +15,7 @@ license=('custom')
 depends=( 'cython' 'cuda' 'python-setuptools')
 # depends=('gcc9' 'cython' 'cuda' 'cmake' 'python-numba' 'spdlog')
 # source=("${_pkgname}::git+https://github.com/rapidsai/rmm.git")
-source=("https://files.pythonhosted.org/packages/9f/1c/86a1a246dab624c90cf4346f7334edf4b3428744587a53df8f68a1b3e3e7/nvtx-0.2.3.tar.gz"
+source=("https://files.pythonhosted.org/packages/16/02/6a593cc3c273c0e1ea3fc38011341749744812b6811045b2fba6506c8de3/nvtx-0.2.4.tar.gz"
     'setup.py.patch')
 
 sha256sums=('SKIP' 'SKIP')
